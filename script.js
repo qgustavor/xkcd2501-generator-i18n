@@ -80,7 +80,7 @@ function textWrap(text, x, y, width, height) {
 function init() {
 	img = new Image();
 	img.crossOrigin = 'anonymous';
-	img.src = '/assets/comic.png';
+	img.src = 'assets/comic.png';
 	img.onload = () => {draw(); document.querySelector('fieldset').removeAttribute('hidden')}
 	
 	let params = new URLSearchParams(document.location.search);

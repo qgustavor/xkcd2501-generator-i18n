@@ -8,7 +8,9 @@ const locales = {
     defaultResponse: 'Quartz',
     templateTopSingular: "{topic} is second nature to us {experts}, so it's easy to forget that the average person probably only knows {example}.",
     templateTopPlural: "{topic} are second nature to us {experts}, so it's easy to forget that the average person probably only knows {example}.",
-    templateBottom: "And {response}, of course."
+    templateBottom: 'And {response}, of course.',
+    ofCourse: 'Of course.',
+    textUnder: "Even when they're trying to compensate for it, experts in anything wildly overestimate the average person's familiarity with their field."
   },
   pt: {
     localeName: 'Português',
@@ -17,9 +19,11 @@ const locales = {
     defaultExperts: 'Geoquímicos',
     defaultExample: 'As fórmulas de olivina e um ou dois feldspatos',
     defaultResponse: 'Quartzo',
-    templateTopSingular: "{topic} é algo natural para nós, {experts}, por isso é fácil esquecer que pessoas comuns provavelmente só sabem {example}.",
-    templateTopPlural: "{topic} são coisas naturais para nós, {experts}, por isso é fácil esquecer que pessoas comuns provavelmente só sabem {example}.",
-    templateBottom: "E {response}, é claro."
+    templateTopSingular: '{topic} é algo natural para nós, {experts}, por isso é fácil esquecer que pessoas comuns provavelmente só conhecem {example}.',
+    templateTopPlural: '{topic} são coisas naturais para nós, {experts}, por isso é fácil esquecer que pessoas comuns provavelmente só conhecem {example}.',
+    templateBottom: 'E {response}, é claro.',
+    ofCourse: 'É claro.',
+    textUnder: 'Mesmo quando eles tentam compensar por isso, especialistas de qualquer assunto superestimam o conhecimento das pessoas comuns com seu campo de estudo.'
   }
 };
 
@@ -37,8 +41,8 @@ localeSelector.addEventListener('change', () => {
 localeSelector.innerHTML = Object.entries(locales).map(e => `<option value="${e[0]}">${e[1].localeName}</option>`).join('')
 
 const ctx = canvas.getContext('2d');
-ctx.font = '18px xkcd-script';
-ctx.textBaseline ='top';
+ctx.font = '18px xkcd-script, Comic Sans MS, cursive';
+ctx.textBaseline = 'top';
 
 document.querySelectorAll('input').forEach(input => {
 	input.addEventListener('input', draw);
@@ -82,21 +86,27 @@ function draw() {
 	ctx.fillStyle = '#FFF';
 	ctx.fillRect(26, 21, 241, 114);
 	ctx.fillRect(88, 150, 181, 16);
+	ctx.fillRect(26, 177, 85, 18);
+	ctx.fillRect(0, 395, 295, 85);
 	
 	ctx.fillStyle = '#000';
 	ctx.textAlign = 'left';
-	textWrap(text1.toUpperCase(), 10, 10, 280, 130)
-	ctx.font = '18px xkcd-script';
+	textWrap(text1.toUpperCase(), 10, 10, 280, 130, true)
+	ctx.font = '18px xkcd-script, Comic Sans MS, cursive';
 	ctx.textAlign = 'right';
 	ctx.fillText(text2.toUpperCase(), 285, 150, 220)
+  ctx.font = '17px xkcd-script, Comic Sans MS, cursive';
+	ctx.fillText(currentLocale.ofCourse.toUpperCase(), 110, 178)
+  ctx.textAlign = 'center';
+	textWrap(currentLocale.textUnder.toUpperCase(), 147, 395, 285, 85, false)
 }
 
-function textWrap(text, x, y, width, height) {
+function textWrap(text, x, y, width, height, alignBottom) {
 	let words = text.split(/\s+/);
 	let currentLine = '';
 	let wrappedText = [];
 	let fontSize = 18;
-	for(let i = 0; i < words.length; i++) {
+	for (let i = 0; i < words.length; i++) {
 		let testLine = currentLine ? currentLine + ' ' + words[i] : words[i];
 		if (ctx.measureText(testLine).width > width && currentLine) {
 			wrappedText.push(currentLine);
@@ -109,12 +119,12 @@ function textWrap(text, x, y, width, height) {
 	
 	if (wrappedText.length * fontSize > height) {
 		fontSize = height / wrappedText.length;
-		ctx.font = `${fontSize}px xkcd-script`;
+		ctx.font = `${fontSize}px xkcd-script, Comic Sans MS, cursive`;
 	}
 	
 	let blockHeight = fontSize * wrappedText.length
-	if (blockHeight < height) {
-		y = 10 + height - blockHeight;
+	if (blockHeight < height && alignBottom) {
+		y += height - blockHeight;
 	}
 	
 	for (let i = 0; i < wrappedText.length; i++) {

@@ -1,3 +1,41 @@
+const locales = {
+  en: {
+    localeName: 'English',
+    copiedString: 'Copied the comic to your clipboard!',
+    defaultTopic: 'Silicate Chemistry',
+    defaultExperts: 'Geochemists',
+    defaultExample: 'The formulas for olivine and one or two feldspars',
+    defaultResponse: 'Quartz',
+    templateTopSingular: "{topic} is second nature to us {experts}, so it's easy to forget that the average person probably only knows {example}.",
+    templateTopPlural: "{topic} are second nature to us {experts}, so it's easy to forget that the average person probably only knows {example}.",
+    templateBottom: "And {response}, of course."
+  },
+  pt: {
+    localeName: 'Português',
+    copiedString: 'Quadrinho copiado para a área de transferência!',
+    defaultTopic: 'Química de Silicatos',
+    defaultExperts: 'Geoquímicos',
+    defaultExample: 'As fórmulas de olivina e um ou dois feldspatos',
+    defaultResponse: 'Quartzo',
+    templateTopSingular: "{topic} é algo natural para nós, {experts}, por isso é fácil esquecer que pessoas comuns provavelmente só sabem {example}.",
+    templateTopPlural: "{topic} são coisas naturais para nós, {experts}, por isso é fácil esquecer que pessoas comuns provavelmente só sabem {example}.",
+    templateBottom: "E {response}, é claro."
+  }
+};
+
+let currentLocale
+function setLocale (userLocale) {
+  let userShortLocale = userLocale.slice(0, 2);
+  currentLocale = locales[userLocale] || locales[userShortLocale] || locales.en;
+}
+setLocale(navigator.language)
+
+localeSelector.addEventListener('change', () => {
+  setLocale(localeSelector.value)
+  draw()
+})
+localeSelector.innerHTML = Object.entries(locales).map(e => `<option value="${e[0]}">${e[1].localeName}</option>`).join('')
+
 const ctx = canvas.getContext('2d');
 ctx.font = '18px xkcd-script';
 ctx.textBaseline ='top';
@@ -19,20 +57,24 @@ buttonCopy.addEventListener('click', async function copyImage() {
 	const data = canvas.toBlob(async (blob) => {
 		await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
 	});
-	window.alert('Copied the comic to your clipboard!');
+	window.alert(currentLocale.copiedString);
 })
 
-function draw() {
-	let topic = inputTopic.value || 'Silicate Chemistry';
-	let plural_topic = inputPluralTopic.checked;
-	let experts = inputExperts.value || 'Geochemists';
-	let example = inputExample.value || 'The formulas for olivine and one or two feldspars';
-	let response = inputResponse.value || 'Quartz';
-	
-	let topic_verb = plural_topic ? 'are' : 'is'; 
+function interpolateTemplate (template, params) {
+  return template.replace(/\{([^}]+?)\}/g, (all, key) => params[key] || '')
+}
 
-	let text1 = `${topic} ${topic_verb} second nature to us ${experts}, so it's easy to forget that the average person probably only knows ${example}.`
-	let text2 = `And ${response}, of course.`
+function draw() {
+	let topic = inputTopic.value || currentLocale.defaultTopic;
+	let plural_topic = inputPluralTopic.checked;
+	let experts = inputExperts.value || currentLocale.defaultExperts;
+	let example = inputExample.value || currentLocale.defaultExample;
+	let response = inputResponse.value || currentLocale.defaultResponse;
+	
+	let top_template = plural_topic ? currentLocale.templateTopPlural : currentLocale.templateTopSingular; 
+
+	let text1 = interpolateTemplate(top_template, {topic, experts, example, response})
+	let text2 = interpolateTemplate(currentLocale.templateBottom, {topic, experts, example, response})
 	
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -92,6 +134,9 @@ function init() {
 	inputExperts.value = params.get('experts');
 	inputExample.value = params.get('example');
 	inputResponse.value = params.get('response');
+  
+  const paramsLocale = params.get('locale');
+  if (paramsLocale) setLocale(setLocale)
 }
 
 init();

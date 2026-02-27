@@ -1,161 +1,179 @@
 @font-face {
-	font-family: 'xkcd-script';
-	src: url('assets/xkcd-script.woff') format('woff');
+  font-family: 'xkcd-script';
+  src: url('assets/xkcd-script.woff') format('woff');
 }
 
 body {
-	width: 100%;
-	height: 100%;
-	margin: 0%;
-	display: flex;
-	flex-direction: column;
-	background: #96a8c8;
-	align-items: center;
-	gap: 5px;
-	font-family: 'xkcd-script';
-	text-align: center;
-	padding: 10px 0;
+  margin: 0;
+  padding: 20px 10px;
+  background: #96a8c8;
+  font-family: 'xkcd-script', "Comic Neue", "Comic Sans MS", cursive;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
 }
 
-header,
-main,
-footer {
-	background: #FFF;
-	border: 1.5px solid #000;
-	border-radius: 12px;
-	width: calc(100% - 20px);
-	max-width: 780px;
-	padding: 10px;
+header, main, footer {
+  background: #FFF;
+  border: 2px solid #000;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 850px;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-a {
-	color: #96A8C8;
-	font-weight: bold;
-	text-decoration: underline 1px dotted;
-}
-
-a:hover {
-	text-decoration: underline 1px solid;
-}
-
-header h1 {
-	margin: 0;
-	font-size: 3rem;
-}
-
-button {
-	background: #6E7B91;
-	color: #FFF;
-	border: 1px solid #333;
-	padding: 1px 1ch;
-	border-radius: 3px;
-	font-family: inherit;
-	font-weight: bold;
-	box-shadow: 0 0 5px gray;
-	width: fit-content;
-	margin: auto;
-	font-size: large;
-}
-
-button:where(:focus, :hover) {
-	background: #FFF;
-	color: #6E7B91;
-	box-shadow: none;
-	cursor: pointer;
-}
+header h1 { margin: 0; font-size: 2.5rem; text-align: center; }
 
 main {
-	display: grid;
-	grid-template-areas:
-		'comic options'
-		'button button';
-	grid-template-columns: 1fr 1fr;
-	align-items: center;
-	gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: center;
+}
+
+canvas {
+  width: 295px;
+  height: 480px;
+  border: 1px solid #ccc;
+  display: block;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.tabs button, select {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 6px 12px;
+  border: 2px solid #333;
+  border-radius: 6px;
+  background: #eee;
+  cursor: pointer;
+}
+
+.tabs button.active {
+  background: #6E7B91;
+  color: white;
+}
+
+select {
+  background: #fff;
+  font-weight: bold;
 }
 
 fieldset {
-	grid-area: options;
-	display: grid;
-	grid-template-columns: 10ch 1fr;
-	padding: 1em 1ch;
-	background: #DDD;
-	border: 2px solid #666;
-	border-radius: 5px;
-	position: relative;
-	gap: 5px;
-	justify-self: left;
-	opacity: 0;
-	animation: fadein .3s forwards 1;
-	animation-delay: .2s;
-}
-
-@keyframes fadein {
-	from {
-		left: -10px;
-		opacity: 0;
-	}
-	to {
-		left: 0;
-		opacity: 1;
-	}
-}
-
-fieldset::before,
-fieldset::after {
-	content: '';
-	width: 0;
-	height: 0;
-	position: absolute;
-	border: 8px solid transparent;
-	top: 50%;
-	display: block;
+  border: 2px solid #666;
+  background: #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+  box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
 }
 
 fieldset::before {
-	border-right-color: #666;
-	left: -18px;
-}
-fieldset::after {
-	border-right-color: #DDD;
-	left: -16px;
-}
-
-legend {
-	padding: 1px 1ch;
-	border: 2px solid #666;
-	background: #EEE;
-	border-radius: 5px;
-	color: #666;
+  content: '';
+  position: absolute;
+  left: -16px;
+  top: 40px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 16px solid #666;
 }
 
-label {
-	text-align: right;
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
 }
 
-input {
-	font-family: inherit;
-	text-transform: uppercase;
-	background: none;
-	border: none;
-	border-bottom: 1px solid #777;
-	font-size: 1rem;
-	border-radius: 3px;
+.input-group.main-col { flex: 2; }
+.input-group.side-col { flex: 1; }
+
+.input-group label {
+  font-weight: bold;
+  font-size: 1.1rem;
 }
 
-input:where(:focus, :active) {
-	outline: none;
-	background: #EEE;
+.row {
+  display: flex;
+  gap: 15px;
+  align-items: center;
 }
 
-canvas, main img {
-	width: 295px;
-	height: 480px;
-	justify-self: right;
+input[type="text"], textarea {
+  font-family: inherit;
+  font-size: 1.1rem;
+  padding: 8px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  width: 100%;
+  box-sizing: border-box;
+  text-transform: uppercase;
 }
 
-footer a:has(img) {
-	text-decoration: none !important;
+input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 }
 
-#buttons {grid-area: button;}
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.actions {
+  width: 100%;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.actions button {
+  flex: 1;
+  max-width: 250px;
+  padding: 12px;
+  font-size: 1.2rem;
+  background: #6E7B91;
+  color: white;
+  border: 2px solid #000;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.actions button:hover {
+  background: #5a667a;
+}
+
+footer {
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+footer img {
+  vertical-align: middle;
+  margin: 5px;
+}
+
+@media (max-width: 750px) {
+  fieldset::before { display: none; }
+  main { flex-direction: column; align-items: center; }
+  .controls { width: 100%; }
+}

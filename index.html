@@ -1,57 +1,105 @@
 <!DOCTYPE html>
-<html lang=en>
-	<head>
-		<title> xkcd 2501 generator </title>
-		<link rel='apple-touch-icon' sizes='180x180' href='assets/favicon/apple-touch-icon.png'>
-		<link rel='icon' type='image/png' sizes='32x32' href='assets/favicon/favicon-32x32.png'>
-		<link rel='icon' type='image/png' sizes='16x16' href='assets/favicon/favicon-16x16.png'>
-		<link rel='manifest' href='assets/favicon/site.webmanifest'>
-		<link rel='stylesheet' href='style.css'>
-	</head>
-</html>
-<body onload='init()'>
-	<header>
-		<h1>xkcd 2501 generator</h1>
-	</header>
-	<main>
-		<canvas id='canvas' width=295 height=480></canvas>
-		<fieldset hidden>
-			<legend>Options</legend>
-			<label for='inputTopic'> Topic: </label>
-			<input type=text id='inputTopic' placeholder='Silicate Chemistry'></input>
-			<label for='inputPluralTopic'> Plural Topic: </label>
-			<input type=checkbox id='inputPluralTopic' ></input>
-			<label for='inputExperts'> Experts: </label>
-			<input type=text id='inputExperts' placeholder='Geochemists'></input>
-			<label for='inputExample'> Example: </label>
-			<input type=text id='inputExample' placeholder='The formulas for olivine and one or two feldspars'></input>
-			<label for='inputResponse'> Response: </label>
-			<input type=text id='inputResponse' placeholder='Quartz'></input>
-		</fieldset>
-		<section id='buttons'>
-			<button id='buttonCopy'>Copy to Clipboard</button>
-			<button id='buttonSave'>Save Image</button>
-      <select id='localeSelector'></select>
-		</section>
-	</main>
-	<footer>
-		xkcd is licensed under CC BY-NC 2.5. More information <a href='https://xkcd.com/license.html' aria-label='xkcd licensing page'>here</a><br>
-		<a href='https://github.com/ipython/xkcd-font'>xkcd-font</a> is licensed under CC BY-NC 3.0.<br>
-		<a href='https://github.com/MarshDeer/xkcd2501-generator'>Source Code</a> | <a href='https://github.com/MarshDeer/xkcd2501-generator/issues/new'>Report Bug</a><br>
-	</footer>
-	<footer>
-		<a href="https://lensdeer.neocities.org" target="_blank">
-			<img src="https://lensdeer.neocities.org/globals/88x31.gif" alt="lensdeer's Hideout">
-		</a>
-		<a href="https://marshdeer.github.io/howlongmojang" target="_blank">
-			<img src="http://marshdeer.github.io/howlongmojang/img/button.gif" alt="How long, Mojang?">
-		</a>
-		<a href="https://marshdeer.github.io/root-faction-randomizer" target="_blank">
-			<img src="https://marshdeer.github.io/root-faction-randomizer/assets/88x31.gif" alt="Root Faction Randomizer">
-		</a>
-		<a href="https://marshdeer.github.io/xkcd2501-generator" target="_blank">
-			<img src="assets/88x51.gif" alt="xkcd 2501 generator">
-		</a>
-	</footer>
-	<script src='script.js'></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>xkcd 2501 generator</title>
+  <link rel='apple-touch-icon' sizes='180x180' href='assets/favicon/apple-touch-icon.png'>
+  <link rel='icon' type='image/png' sizes='32x32' href='assets/favicon/favicon-32x32.png'>
+  <link rel='icon' type='image/png' sizes='16x16' href='assets/favicon/favicon-16x16.png'>
+  <link rel='manifest' href='assets/favicon/site.webmanifest'>
+  <link rel="stylesheet" href="style.css">
+  <style>[v-cloak] { display: none; }</style>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <header>
+      <h1>{{ currentLocale.title }}</h1>
+    </header>
+
+    <main>
+      <div class="comic-container">
+        <canvas ref="canvas" width="590" height="960"></canvas>
+      </div>
+
+      <section class="controls">
+        <div class="tabs">
+          <button @click="mode = 'simple'" :class="{ active: mode === 'simple' }">{{ currentLocale.ui.simple }}</button>
+          <button @click="mode = 'advanced'" :class="{ active: mode === 'advanced' }">{{ currentLocale.ui.advanced }}</button>
+          <select v-model="localeKey">
+            <option v-for="(l, key) in locales" :key="key" :value="key">{{ l.name }}</option>
+          </select>
+        </div>
+
+        <fieldset v-if="mode === 'simple'">
+          <div class="row">
+            <div class="input-group main-col">
+              <label>{{ currentLocale.ui.topic }}</label>
+              <input type="text" v-model="simple.topic" :placeholder="currentLocale.defaults.topic">
+            </div>
+            <div class="input-group side-col">
+              <label>{{ currentLocale.ui.plural }}</label>
+              <input type="checkbox" v-model="simple.isPlural">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>{{ currentLocale.ui.experts }}</label>
+            <input type="text" v-model="simple.experts" :placeholder="currentLocale.defaults.experts">
+          </div>
+
+          <div class="input-group">
+            <label>{{ currentLocale.ui.example }}</label>
+            <input type="text" v-model="simple.example" :placeholder="currentLocale.defaults.example">
+          </div>
+
+          <div class="input-group">
+            <label>{{ currentLocale.ui.response }}</label>
+            <input type="text" v-model="simple.response" :placeholder="currentLocale.defaults.response">
+          </div>
+        </fieldset>
+
+        <fieldset v-else>
+          <div class="input-group">
+            <label>{{ currentLocale.ui.topLabel }}</label>
+            <textarea v-model="advanced.top"></textarea>
+          </div>
+          <div class="input-group">
+            <label>{{ currentLocale.ui.bottomLabel }}</label>
+            <textarea v-model="advanced.bottom"></textarea>
+          </div>
+          <div class="row">
+            <div class="input-group side-col">
+               <label>{{ currentLocale.ui.ofCourseLabel }}</label>
+               <input type="text" v-model="advanced.ofCourse">
+            </div>
+          </div>
+          <div class="input-group">
+            <label>{{ currentLocale.ui.footerLabel }}</label>
+            <textarea v-model="advanced.footer"></textarea>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button @click="copyImage">{{ currentLocale.ui.copy }}</button>
+          <button @click="saveImage">{{ currentLocale.ui.save }}</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      xkcd is licensed under CC BY-NC 2.5. More information <a href='https://xkcd.com/license.html' aria-label='xkcd licensing page'>here</a><br>
+      <a href='https://github.com/ipython/xkcd-font'>xkcd-font</a> is licensed under CC BY-NC 3.0.<br>
+      <a href='https://github.com/MarshDeer/xkcd2501-generator'>Source Code</a> | <a href='https://github.com/MarshDeer/xkcd2501-generator/issues/new'>Report Bug</a><br>
+    </footer>
+
+    <footer>
+      <a href="https://lensdeer.neocities.org" target="_blank"><img src="https://lensdeer.neocities.org/globals/88x31.gif" alt="lensdeer's Hideout"></a>
+      <a href="https://marshdeer.github.io/howlongmojang" target="_blank"><img src="http://marshdeer.github.io/howlongmojang/img/button.gif" alt="How long, Mojang?"></a>
+      <a href="https://marshdeer.github.io/root-faction-randomizer" target="_blank"><img src="https://marshdeer.github.io/root-faction-randomizer/assets/88x31.gif" alt="Root Faction Randomizer"></a>
+      <a href="https://marshdeer.github.io/xkcd2501-generator" target="_blank"><img src="assets/88x51.gif" alt="xkcd 2501 generator"></a>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
 </body>
+</html>

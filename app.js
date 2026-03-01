@@ -111,8 +111,8 @@ createApp({
       drawText(ctx, advanced.bottom, 285, 150, 220, 45, 'right', 'top')
 
       ctx.font = '17px xkcd-script, "Comic Sans MS", cursive'
-      ctx.textAlign = 'right'
-      ctx.fillText(advanced.ofCourse.toUpperCase(), 110, 178)
+      ctx.textAlign = 'left'
+      ctx.fillText(advanced.ofCourse.toUpperCase(), 25, 178)
 
       drawText(ctx, advanced.footer, 147, 400, 285, 75, 'center', 'center', 16)
     }

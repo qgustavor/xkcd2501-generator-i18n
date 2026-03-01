@@ -107,7 +107,7 @@ createApp({
       ctx.fillRect(0, 395, 295, 85)
 
       ctx.fillStyle = 'black'
-      drawText(ctx, advanced.top, 30, 25, 235, 110, 'left', 'bottom')
+      drawText(ctx, advanced.top, 30, 10, 235, 130, 'left', 'bottom')
       drawText(ctx, advanced.bottom, 285, 150, 220, 45, 'right', 'top')
 
       ctx.font = '17px xkcd-script, "Comic Sans MS", cursive'

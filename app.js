@@ -133,6 +133,7 @@ createApp({
     }
 
     watch(currentLocale, function (newLocale) {
+      document.title = newLocale.title
       document.documentElement.lang = newLocale.lang
     }, { immediate: true })
 

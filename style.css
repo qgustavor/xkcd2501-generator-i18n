@@ -95,6 +95,16 @@ fieldset::before {
   border-right: 16px solid #666;
 }
 
+fieldset::after {
+  content: '';
+  position: absolute;
+  left: -13px;
+  top: 40px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-right: 16px solid #ddd;
+}
+
 .input-group {
   display: flex;
   flex-direction: column;
@@ -173,7 +183,7 @@ footer img {
 }
 
 @media (max-width: 750px) {
-  fieldset::before { display: none; }
+  fieldset::before, fieldset::after { display: none; }
   main { flex-direction: column; align-items: center; }
   .controls { width: 100%; }
 }
